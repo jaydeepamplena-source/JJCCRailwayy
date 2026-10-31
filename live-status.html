@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Train Status | JJCC Railways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="status" data-active="status">
+  <div id="site-header"></div>
+
+  <main class="wrap wrap-xl section">
+    <div class="status-head">
+      <div>
+        <h1 class="page-title">Live Train Status</h1>
+        <p class="page-sub">Real-time departures, arrivals &amp; service updates</p>
+      </div>
+      <div class="clock" id="clock" role="timer" aria-label="Current time">--:--:--</div>
+    </div>
+
+    <div class="alert alert-warn">&#9888;&#65039; <span>JRN-9204: Delayed 12 minutes due to a late crew change at Clark. Onward connections at Tarlac City should be maintained.</span></div>
+    <div class="alert alert-info">&#8505;&#65039; <span>Platform changes at Legazpi, Albay: JRC-7423 now departs from Platform 5 (was Platform 4).</span></div>
+    <div class="alert alert-info">&#8505;&#65039; <span>Engineering works this weekend between Malolos, Bulacan and Naga, Camarines Sur. Replacement buses operate Sunday 09:00&ndash;17:00.</span></div>
+
+    <div class="chips" id="stationChips" role="group" aria-label="Choose a station"></div>
+
+    <div class="status-grid">
+      <div class="board">
+        <div class="board-head"><span id="boardTitle"></span><span class="live">LIVE</span></div>
+        <div class="board-scroll">
+          <table>
+            <thead>
+              <tr><th>DESTINATION</th><th>SCHED.</th><th>EXPECT.</th><th>PLAT.</th><th>SERVICE</th><th>STATUS</th></tr>
+            </thead>
+            <tbody id="boardBody"></tbody>
+          </table>
+        </div>
+        <div class="board-search"><input id="boardSearch" type="search" placeholder="Search by train number or destination..." aria-label="Search services" /></div>
+      </div>
+
+      <aside class="side-stack">
+        <div class="card select-card" id="serviceCard" aria-live="polite"></div>
+        <div class="network">
+          <h3>Network status</h3>
+          <ul id="networkList"></ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book a Journey | JJCC Railways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="book" data-active="book">
+  <div id="site-header"></div>
+
+  <main>
+    <section class="book-hero">
+      <h1 class="book-title"><span class="t1">Where are you</span><span class="t2">headed today?</span></h1>
+
+      <form class="search-card" id="searchForm" novalidate>
+        <div class="trip-tabs" role="tablist" aria-label="Trip type">
+          <button type="button" class="trip-tab is-active" role="tab" aria-selected="true" data-trip="oneway">One-Way Trip</button>
+          <button type="button" class="trip-tab" role="tab" aria-selected="false" data-trip="round">Round Trip</button>
+        </div>
+
+        <div class="route-row">
+          <div class="sfield">
+            <label class="lbl" for="fromInput">From</label>
+            <div class="sbox"><input class="inp" id="fromInput" placeholder="Departure station" autocomplete="off" /></div>
+          </div>
+          <button type="button" class="swap" id="swapBtn" aria-label="Swap stations">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4L3 8l4 4M3 8h14M17 12l4 4-4 4M21 16H7"/></svg>
+          </button>
+          <div class="sfield">
+            <label class="lbl" for="toInput">To</label>
+            <div class="sbox"><input class="inp" id="toInput" placeholder="Destination station" autocomplete="off" /></div>
+          </div>
+        </div>
+
+        <div class="date-row">
+          <div class="sfield">
+            <label class="lbl" for="dateInput">Outbound date</label>
+            <input class="inp" type="date" id="dateInput" />
+          </div>
+          <div class="sfield" id="returnField" hidden>
+            <label class="lbl" for="returnInput">Return date</label>
+            <input class="inp" type="date" id="returnInput" />
+          </div>
+          <div class="sfield">
+            <label class="lbl" for="paxSelect">Passengers</label>
+            <select class="inp" id="paxSelect"></select>
+          </div>
+        </div>
+
+        <p class="hint" id="searchHint" role="status"></p>
+        <button type="submit" class="search-btn" id="searchBtn" disabled>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          Search trains
+        </button>
+      </form>
+    </section>
+
+    <section class="wrap wrap-lg section">
+      <h2 class="section-title">Popular routes</h2>
+      <div class="route-grid">
+        <a class="route-card" href="results.html?from=TUT&amp;to=MLO">
+          <div class="route-codes"><span>TUT</span><i>&rarr;</i><span>MLO</span></div>
+          <div class="route-name">Tutuban &rarr; Malolos</div>
+          <div class="route-meta">1h 10m &middot; Direct</div>
+          <span class="route-link">Search this route &rarr;</span>
+        </a>
+        <a class="route-card" href="results.html?from=ALA&amp;to=CLB">
+          <div class="route-codes"><span>ALA</span><i>&rarr;</i><span>CLB</span></div>
+          <div class="route-name">Alabang &rarr; Calamba</div>
+          <div class="route-meta">1h 20m &middot; Direct</div>
+          <span class="route-link">Search this route &rarr;</span>
+        </a>
+        <a class="route-card" href="results.html?from=NGA&amp;to=LGP">
+          <div class="route-codes"><span>NGA</span><i>&rarr;</i><span>LGP</span></div>
+          <div class="route-name">Naga &rarr; Legazpi</div>
+          <div class="route-meta">2h 15m &middot; Direct</div>
+          <span class="route-link">Search this route &rarr;</span>
+        </a>
+        <a class="route-card" href="results.html?from=CRK&amp;to=TAR">
+          <div class="route-codes"><span>CRK</span><i>&rarr;</i><span>TAR</span></div>
+          <div class="route-name">Clark &rarr; Tarlac City</div>
+          <div class="route-meta">55m &middot; Direct</div>
+          <span class="route-link">Search this route &rarr;</span>
+        </a>
+      </div>
+
+      <div class="feature-grid">
+        <a class="feature feature-dark" href="live-status.html">
+          <div class="ico">&#128339;</div>
+          <h3>Live Train Status</h3>
+          <p>Real-time departures, arrivals &amp; platform info</p>
+        </a>
+        <a class="feature" href="manage.html">
+          <div class="ico">&#128197;</div>
+          <h3>Manage Booking</h3>
+          <p>Change dates, upgrade class or add passengers</p>
+        </a>
+        <a class="feature" href="refund.html">
+          <div class="ico">&#9201;&#65039;</div>
+          <h3>Delay Repay</h3>
+          <p>Claim compensation for delayed or cancelled services</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="script.js"></script>
+</body>
+</html>
