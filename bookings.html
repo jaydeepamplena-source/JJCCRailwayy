@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings Management | JJCC Railways</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f5f3ee;
+      color: #172440;
+    }
+
+    header {
+      background: #102044;
+      color: white;
+      padding: 20px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header h2 {
+      font-size: 21px;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      border: 1px solid #ffffff66;
+      padding: 10px 15px;
+      border-radius: 7px;
+    }
+
+    main {
+      width: 92%;
+      max-width: 1450px;
+      margin: 35px auto;
+    }
+
+    .heading {
+      margin-bottom: 25px;
+    }
+
+    .heading h1 {
+      font-size: 29px;
+      margin-bottom: 7px;
+    }
+
+    .heading p {
+      color: #77766f;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #e4e0d8;
+    }
+
+    .stat span {
+      color: #77766f;
+      font-size: 14px;
+    }
+
+    .stat h2 {
+      font-size: 28px;
+      margin-top: 9px;
+    }
+
+    .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #e4e0d8;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    input, select {
+      min-height: 43px;
+      padding: 10px 13px;
+      border: 1px solid #c9c8c4;
+      border-radius: 7px;
+      font-size: 14px;
+      background: white;
+      color: #172440;
+    }
+
+    input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 11px 18px;
+      background: #d18408;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e9e6df;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f5f3ee;
+      color: #555b69;
+      font-size: 12px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    td strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: #77766f;
+      font-size: 12px;
+    }
+
+    .status {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 6px 10px;
+      background: #eeeeee;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status.confirmed {
+      background: #e2f5e9;
+      color: #187443;
+    }
+
+    .status.cancelled {
+      background: #fbe5e5;
+      color: #a52c2c;
+    }
+
+    #message {
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 7px;
+      display: none;
+      background: #fff2d7;
+      color: #825600;
+    }
+
+    #empty {
+      text-align: center;
+      padding: 35px;
+      color: #77766f;
+      display: none;
+    }
+
+    @media(max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      main {
+        width: 95%;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>JJCC RAILWAYS | BOOKINGS</h2>
+  <a id="dashboardLink" href="admin.html">Back to Dashboard</a>
+</header>
+
+<main>
+
+  <section class="heading">
+    <h1>Bookings Management</h1>
+    <p>View passenger bookings and train reservations.</p>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <span>Total Bookings</span>
+      <h2 id="totalBookings">0</h2>
+    </div>
+
+    <div class="stat">
+      <span>Confirmed Bookings</span>
+      <h2 id="confirmedBookings">0</h2>
+    </div>
+
+    <div class="stat">
+      <span>Cancelled Bookings</span>
+      <h2 id="cancelledBookings">0</h2>
+    </div>
+  </section>
+
+  <section class="panel">
+
+    <h3>All Train Bookings</h3>
+
+    <div id="message"></div>
+
+    <div class="toolbar">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search passenger, train or booking reference..."
+      >
+
+      <select id="statusFilter">
+        <option value="all">All Statuses</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="pending">Pending</option>
+      </select>
+
+      <button id="refreshButton" type="button">
+        Refresh
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking Reference</th>
+            <th>Booked By</th>
+            <th>Train</th>
+            <th>Route</th>
+            <th>Travel Date</th>
+            <th>Passengers / Seats</th>
+            <th>Fare</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="bookingTable"></tbody>
+      </table>
+    </div>
+
+    <div id="empty">
+      No booking records found.
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const SUPABASE_URL =
+    'https://ocjyyfzuoiprwajwyize.supabase.co';
+
+  const SUPABASE_KEY =
+    'sb_publishable_XZu8suOKCWB9Zp7dYhzxgQ_Yaq5zxo8';
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const $ = (selector) => document.querySelector(selector);
+
+  let allBookings = [];
+
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[char]);
+  }
+
+  function showMessage(message) {
+    const box = $('#message');
+    box.textContent = message;
+    box.style.display = 'block';
+  }
+
+  function hideMessage() {
+    $('#message').style.display = 'none';
+  }
+
+  function formatDate(value) {
+    if (!value) return '—';
+
+    const date = new Date(value + 'T00:00:00');
+
+    if (Number.isNaN(date.getTime())) return '—';
+
+    return date.toLocaleDateString('en-PH', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  function formatTime(value) {
+    return value ? String(value).slice(0, 5) : '—';
+  }
+
+  function formatFare(value) {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP'
+    }).format(Number(value || 0));
+  }
+
+  function renderStats() {
+    $('#totalBookings').textContent = allBookings.length;
+
+    $('#confirmedBookings').textContent =
+      allBookings.filter(row =>
+        String(row.booking_status).toLowerCase() === 'confirmed'
+      ).length;
+
+    $('#cancelledBookings').textContent =
+      allBookings.filter(row =>
+        String(row.booking_status).toLowerCase() === 'cancelled'
+      ).length;
+  }
+
+  function renderBookings() {
+    const search = $('#searchInput').value.trim().toLowerCase();
+    const status = $('#statusFilter').value;
+
+    const filtered = allBookings.filter(row => {
+      const rowStatus =
+        String(row.booking_status || '').toLowerCase();
+
+      const passengers = Array.isArray(row.passengers)
+        ? row.passengers
+        : [];
+
+      const passengerNames = passengers
+        .map(person => person.full_name || '')
+        .join(' ');
+
+      const searchable = [
+        row.booking_reference,
+        row.booked_by,
+        row.train_code,
+        row.train_name,
+        row.departure_station,
+        row.arrival_station,
+        passengerNames
+      ].join(' ').toLowerCase();
+
+      const matchesSearch = searchable.includes(search);
+
+      const matchesStatus =
+        status === 'all' || rowStatus === status;
+
+      return matchesSearch && matchesStatus;
+    });
+
+    const tbody = $('#bookingTable');
+
+    tbody.innerHTML = filtered.map(row => {
+      const passengers = Array.isArray(row.passengers)
+        ? row.passengers
+        : [];
+
+      const passengerHTML = passengers.length
+        ? passengers.map(person => `
+            <div style="margin-bottom:7px;">
+              <strong>${escapeHTML(person.full_name || 'Unnamed passenger')}</strong>
+              <span class="muted">
+                Seat: ${escapeHTML(person.seat_number || 'Not assigned')}
+              </span>
+            </div>
+          `).join('')
+        : '<span class="muted">No passenger details</span>';
+
+      const rawStatus =
+        String(row.booking_status || 'unknown').toLowerCase();
+
+      const statusClass =
+        ['confirmed', 'cancelled'].includes(rawStatus)
+          ? rawStatus
+          : '';
+
+      return `
+        <tr>
+          <td>
+            <strong>${escapeHTML(row.booking_reference || '—')}</strong>
+            <span class="muted">${escapeHTML(row.booking_class || '')}</span>
+          </td>
+
+          <td>
+            <strong>${escapeHTML(row.booked_by || 'Unknown account')}</strong>
+          </td>
+
+          <td>
+            <strong>${escapeHTML(row.train_code || '—')}</strong>
+            <span class="muted">${escapeHTML(row.train_name || '')}</span>
+          </td>
+
+          <td>
+            ${escapeHTML(row.departure_station || '—')}
+            <br>↓<br>
+            ${escapeHTML(row.arrival_station || '—')}
+            <span class="muted">
+              ${escapeHTML(formatTime(row.departure_time))}
+              –
+              ${escapeHTML(formatTime(row.arrival_time))}
+            </span>
+          </td>
+
+          <td>${escapeHTML(formatDate(row.travel_date))}</td>
+
+          <td>${passengerHTML}</td>
+
+          <td><strong>${escapeHTML(formatFare(row.total_fare))}</strong></td>
+
+          <td>
+            <span class="status ${statusClass}">
+              ${escapeHTML(rawStatus)}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    $('#empty').style.display =
+      filtered.length ? 'none' : 'block';
+  }
+
+  async function loadBookings() {
+    const button = $('#refreshButton');
+
+    button.disabled = true;
+    button.textContent = 'Loading...';
+    hideMessage();
+
+    try {
+      const { data: authData, error: authError } =
+        await client.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!authData.user) {
+        location.replace('index.html');
+        return;
+      }
+
+      const { data: role, error: roleError } =
+        await client.rpc('current_user_role');
+
+      if (roleError) throw roleError;
+
+      if (!['admin', 'super_admin'].includes(role)) {
+        location.replace('book.html');
+        return;
+      }
+
+      $('#dashboardLink').href =
+        role === 'super_admin'
+          ? 'superadmin.html'
+          : 'admin.html';
+
+      const { data, error } =
+        await client.rpc('get_staff_booking_records');
+
+      if (error) throw error;
+
+      allBookings = (Array.isArray(data) ? data : [])
+        .map(item => item.booking || item);
+
+      renderStats();
+      renderBookings();
+
+    } catch (error) {
+      console.error('Booking records error:', error);
+
+      showMessage(
+        error.message || 'Unable to load booking records.'
+      );
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Refresh';
+    }
+  }
+
+  $('#refreshButton').addEventListener('click', loadBookings);
+
+  $('#searchInput').addEventListener('input', renderBookings);
+
+  $('#statusFilter').addEventListener('change', renderBookings);
+
+  loadBookings();
+})();
+</script>
+
+</body>
+</html>

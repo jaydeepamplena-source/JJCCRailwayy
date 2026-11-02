@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Refund &amp; Delay Compensation | JJCC Railways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="refund" data-active="refund">
+  <div id="site-header"></div>
+
+  <main class="wrap wrap-sm section">
+    <h1 class="page-title">Refund &amp; Delay Compensation</h1>
+    <p class="page-sub">Cancel your booking or claim Delay Repay compensation under the JJCC Conditions of Carriage</p>
+
+    <!-- Step 1: find booking -->
+    <div id="refundFind">
+      <div class="tier-grid">
+        <div class="tier tier-1"><span class="ti">&#9201;&#65039;</span><b>30+ min delay</b><small>25% of fare back via Delay Repay</small></div>
+        <div class="tier tier-2"><span class="ti">&#9203;</span><b>60+ min delay</b><small>50% of fare back via Delay Repay</small></div>
+        <div class="tier tier-3"><span class="ti">&#128368;</span><b>120+ min delay</b><small>100% of fare back via Delay Repay</small></div>
+      </div>
+
+      <div class="card">
+        <h2>Find your booking</h2>
+        <form id="rfForm" novalidate>
+          <div class="two-col">
+            <div class="field">
+              <label class="lbl" for="rfRef">Booking reference</label>
+              <input class="inp" id="rfRef" placeholder="e.g. JRC-X7K2-MNP" autocomplete="off" />
+              <p class="error" id="rfRefError" role="alert"></p>
+            </div>
+            <div class="field">
+              <label class="lbl" for="rfEmail">Email address</label>
+              <input class="inp" type="email" id="rfEmail" placeholder="Booking email" autocomplete="email" />
+              <p class="error" id="rfEmailError" role="alert"></p>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary block">Find booking</button>
+<p class="demo-note">
+  Enter your booking reference and the email linked to your account.
+</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Step 2: choose claim or cancel -->
+    <div id="refundChoose" class="stack" hidden>
+      <div class="mini-card">
+        <div>
+          <div class="ref" id="sumRef"></div>
+          <h2 id="sumRoute"></h2>
+          <p id="sumMeta"></p>
+        </div>
+        <button type="button" id="changeBooking">Change</button>
+      </div>
+
+      <div class="card">
+        <h2>What would you like to do?</h2>
+        <div class="choice-grid">
+          <button type="button" class="choice is-active" data-mode="delay"><span class="ti">&#9201;&#65039;</span><b>Claim Delay Repay</b><small>Your train arrived late at destination</small></button>
+          <button type="button" class="choice" data-mode="cancel"><span class="ti">&#10006;&#65039;</span><b>Cancel booking</b><small>Request a refund for unused ticket</small></button>
+        </div>
+      </div>
+
+      <!-- Delay details -->
+      <div class="card" id="delayPanel">
+        <h2>Delay details</h2>
+        <div class="two-col">
+          <div class="field">
+            <label class="lbl" for="delayMin">Actual delay at destination (minutes)</label>
+            <input class="inp inp-white" type="number" min="1" id="delayMin" placeholder="e.g. 45" />
+            <p class="error" id="delayMinError" role="alert"></p>
+          </div>
+          <div class="field">
+            <label class="lbl" for="delayReason">Reason (if known)</label>
+            <select class="inp inp-white" id="delayReason">
+              <option value="">Select a reason</option>
+              <option>Signalling problem</option>
+              <option>Staff shortage</option>
+              <option>Weather conditions</option>
+              <option>Engineering works</option>
+              <option>Technical fault on train</option>
+              <option>Not known</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label class="lbl" for="delayNotes">Additional notes (optional)</label>
+          <textarea class="inp inp-white" id="delayNotes" placeholder="Any additional information about your journey disruption..."></textarea>
+        </div>
+      </div>
+
+      <!-- Cancellation details -->
+      <div class="card" id="cancelPanel" hidden>
+        <h2>Cancellation &amp; refund</h2>
+        <div class="notice notice-warn" style="margin-top:0"><b>Advance Saver fare:</b> Non-refundable. You may exchange for a later date (up to 24 hours before departure) for an exchange fee.</div>
+        <div class="fee-row"><span>Original fare paid</span><b id="cxFare"></b></div>
+        <div class="fee-row"><span>Admin fee</span><b id="cxAdmin"></b></div>
+        <div class="fee-row"><span>Estimated refund</span><b>&#8369;0.00 (non-refundable fare)</b></div>
+        <div class="field" style="margin-top:16px;margin-bottom:0">
+          <label class="lbl" for="cxReason">Reason for cancellation</label>
+          <select class="inp inp-white" id="cxReason">
+            <option>Change of plans</option>
+            <option>Illness</option>
+            <option>Found a cheaper fare</option>
+            <option>Travel disruption</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button type="button" class="btn-gold" id="submitBtn" disabled>Submit Delay Repay claim</button>
+        <button type="button" class="btn-outline" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 3: confirmation -->
+    <div id="refundDone" class="done-box" hidden>
+      <div class="done-check">&#10003;</div>
+      <h2 id="doneTitle">Claim submitted</h2>
+      <p id="doneText"></p>
+      <div class="claim-ref">
+        <div class="k">CLAIM REFERENCE</div>
+        <strong id="claimRef"></strong>
+        <p id="claimPayout"></p>
+        <p id="claimMethod"></p>
+      </div>
+      <a class="btn-primary" href="book.html">Back to home</a>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>
