@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JJCC Railways | Admin Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --navy: #102044;
+      --gold: #d18408;
+      --cream: #f5f3ee;
+      --ink: #172440;
+      --muted: #77766f;
+      --line: #e5e3de;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      height: 100vh;
+      background: var(--navy);
+      color: white;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .subtitle {
+      color: #b9c4d7;
+      font-size: 10px;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    .menu-title {
+      color: #9eacc3;
+      font-size: 11px;
+      margin: 18px 10px 12px;
+    }
+
+    .menu-item {
+      display: block;
+      text-decoration: none;
+      color: #dce4f1;
+      padding: 14px 12px;
+      border-radius: 7px;
+      margin-bottom: 7px;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: #263d64;
+      color: white;
+    }
+
+    .logout {
+      margin-top: auto;
+      background: #263d64;
+      border: none;
+      color: white;
+      padding: 13px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .main {
+      margin-left: 250px;
+      padding: 35px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .topbar h1 {
+      font-size: 27px;
+    }
+
+    .topbar p {
+      color: var(--muted);
+      margin-top: 7px;
+      font-size: 13px;
+    }
+
+    .admin-badge {
+      background: #fff1d8;
+      color: #a66a08;
+      padding: 9px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card h2 {
+      font-size: 32px;
+      margin: 14px 0 5px;
+    }
+
+    .card small {
+      color: var(--muted);
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 22px;
+    }
+
+    .panel h2 {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .panel p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .bookings-link {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 12px 18px;
+      background: var(--gold);
+      color: white;
+      border-radius: 7px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .bookings-link:hover {
+      background: #ad6b05;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .status.error {
+      color: #dc2626;
+    }
+
+    @media(max-width: 850px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main {
+        margin-left: 200px;
+        padding: 22px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width: 600px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+
+      .subtitle {
+        margin-bottom: 20px;
+      }
+
+      .logout {
+        margin-top: 15px;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+  <div class="brand">🚆 JJCC <span>RAILWAYS</span></div>
+  <p class="subtitle">ADMIN PORTAL</p>
+
+  <p class="menu-title">MAIN MENU</p>
+
+  <a class="menu-item active" href="admin.html">
+    ▦ Dashboard Overview
+  </a>
+
+  <a class="menu-item" href="bookings.html">
+    ▣ Bookings Management
+  </a>
+
+  <p class="menu-title">ACCOUNT</p>
+
+  <button class="logout" id="logoutButton">
+    ↪ Sign Out
+  </button>
+
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1>Dashboard Overview</h1>
+      <p>Welcome to JJCC Railways Administration.</p>
+    </div>
+
+    <span class="admin-badge">♜ ADMIN</span>
+  </header>
+
+  <section class="cards">
+
+    <div class="card">
+      <p>Total Bookings</p>
+      <h2 id="totalBookings">—</h2>
+      <small>All recorded reservations</small>
+    </div>
+
+    <div class="card">
+      <p>Confirmed Bookings</p>
+      <h2 id="confirmedBookings">—</h2>
+      <small>Confirmed reservations</small>
+    </div>
+
+    <div class="card">
+      <p>Cancelled Bookings</p>
+      <h2 id="cancelledBookings">—</h2>
+      <small>Cancelled reservations</small>
+    </div>
+
+  </section>
+
+  <section class="panel">
+    <h2>Bookings Management</h2>
+
+    <p>
+      View the customers who booked trains, their booking references,
+      selected train, route, travel date, passenger details, seats,
+      total fare, and booking status.
+    </p>
+
+    <a class="bookings-link" href="bookings.html">
+      VIEW ALL BOOKINGS →
+    </a>
+  </section>
+
+  <section class="panel">
+    <h2>Administrator Information</h2>
+
+    <p>
+      Signed in as:
+      <strong id="adminName">Loading...</strong>
+    </p>
+
+    <p id="statusMessage" class="status">
+      Checking account access...
+    </p>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const SUPABASE_URL =
+    'https://ocjyyfzuoiprwajwyize.supabase.co';
+
+  const SUPABASE_KEY =
+    'sb_publishable_XZu8suOKCWB9Zp7dYhzxgQ_Yaq5zxo8';
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const $ = selector => document.querySelector(selector);
+
+  function showError(message) {
+    const status = $('#statusMessage');
+    status.textContent = message;
+    status.classList.add('error');
+  }
+
+  async function loadDashboard() {
+    try {
+      const { data: authData, error: authError } =
+        await client.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!authData.user) {
+        window.location.replace('index.html');
+        return;
+      }
+
+      const { data: role, error: roleError } =
+        await client.rpc('current_user_role');
+
+      if (roleError) throw roleError;
+
+      if (role !== 'admin') {
+        window.location.replace(
+          role === 'super_admin' ? 'superadmin.html' : 'book.html'
+        );
+        return;
+      }
+
+      const { data: profile, error: profileError } =
+        await client
+          .from('profiles')
+          .select('user_id, full_name, role')
+          .eq('user_id', authData.user.id)
+          .maybeSingle();
+
+      if (profileError) throw profileError;
+
+      $('#adminName').textContent =
+        profile?.full_name || authData.user.email || 'Admin';
+
+      const { data: records, error: bookingsError } =
+        await client.rpc('get_staff_booking_records');
+
+      if (bookingsError) throw bookingsError;
+
+      const bookings = (records || []).map(item =>
+        item.booking || item
+      );
+
+      $('#totalBookings').textContent = bookings.length;
+
+      $('#confirmedBookings').textContent =
+        bookings.filter(item =>
+          String(item.booking_status).toLowerCase() === 'confirmed'
+        ).length;
+
+      $('#cancelledBookings').textContent =
+        bookings.filter(item =>
+          String(item.booking_status).toLowerCase() === 'cancelled'
+        ).length;
+
+      $('#statusMessage').textContent =
+        'Your Admin account has been verified successfully.';
+
+    } catch (error) {
+      console.error('Admin dashboard error:', error);
+      showError(error.message || 'Unable to load dashboard.');
+    }
+  }
+
+  $('#logoutButton').addEventListener('click', async () => {
+    const button = $('#logoutButton');
+    button.disabled = true;
+    button.textContent = 'Signing out...';
+
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+      showError(error.message);
+      button.disabled = false;
+      button.textContent = '↪ Sign Out';
+      return;
+    }
+
+    window.location.replace('index.html');
+  });
+
+  loadDashboard();
+})();
+</script>
+
+</body>
+</html>
