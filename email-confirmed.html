@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Confirmed | JJCC Railways</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f3ee;
+      color: #172440;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .confirmation-card {
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      border-radius: 18px;
+      padding: 42px 30px;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(16, 32, 68, .09);
+    }
+
+    .success-icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #e5f6eb;
+      color: #21834b;
+      display: grid;
+      place-items: center;
+      font-size: 38px;
+      margin: 0 auto 24px;
+    }
+
+    h1 {
+      font-size: 25px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #77766f;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: #102044;
+      color: white;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: #1c376c;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #102044;
+      margin-bottom: 30px;
+    }
+
+    #status {
+      font-size: 13px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="confirmation-card">
+
+    <div class="brand">JJCC RAILWAYS</div>
+
+    <div class="success-icon">✓</div>
+
+    <h1>Email Confirmed!</h1>
+
+    <p>
+      Your email address has been successfully verified.
+      Your account is now ready.
+      You can now sign in using your registered email and password.
+    </p>
+
+    <a href="index.html" class="btn">
+      Proceed to Sign In
+    </a>
+
+    <p id="status" aria-live="polite"></p>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://ocjyyfzuoiprwajwyize.supabase.co';
+
+    const SUPABASE_KEY =
+      'YOUR_EXISTING_SUPABASE_PUBLISHABLE_KEY';
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    async function finishConfirmation() {
+      const status = document.getElementById('status');
+
+      try {
+        // Wait for Supabase to process the confirmation callback.
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+
+        if (error) throw error;
+
+        if (data.session) {
+          // Do not keep the confirmation session active.
+          const { error: signOutError } =
+            await supabaseClient.auth.signOut();
+
+          if (signOutError) throw signOutError;
+        }
+
+        // Remove confirmation tokens from the address bar.
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+
+        status.textContent =
+          'You are signed out. Please sign in to continue.';
+
+      } catch (error) {
+        console.error('Confirmation handling error:', error);
+
+        status.textContent =
+          'If your email is confirmed, please proceed to sign in.';
+      }
+    }
+
+    finishConfirmation();
+  </script>
+
+</body>
+</html>
