@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Booking Changes | JJCC Railways</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.bc-page{max-width:1000px;margin:auto}.bc-request{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin:14px 0}.bc-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.bc-status{font-size:12px;font-weight:700;text-transform:uppercase;border-radius:20px;padding:6px 10px;background:#eee}.bc-status.approved{background:#e5f5eb;color:#176b3a}.bc-status.pending_payment,.bc-status.pending_review{background:#fff2d7;color:#8a5200}.bc-status.rejected,.bc-status.expired,.bc-status.cancelled{background:#fde8e7;color:#a52c2c}
+</style></head>
+<body data-page="booking-changes" data-active="book"><div id="site-header"></div>
+<main class="wrap section bc-page">
+<nav class="crumbs"><a href="active-bookings.html">Bookings</a><span>›</span><span>Booking Changes</span></nav>
+<h1 class="page-title">Booking Changes</h1><p class="page-sub">Track your combined modification requests and their payment or approval status.</p>
+<div id="changeHistoryMessage" class="notice notice-info">Loading your modification requests…</div>
+<div id="changeHistoryList"></div>
+<a class="btn-outline" href="active-bookings.html">Back to Bookings</a>
+</main><div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="script.js"></script><script src="booking-changes.js"></script>
+</body></html>

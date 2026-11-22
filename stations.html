@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Station Directory | JJCC Railways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="stations" data-active="stations">
+  <div id="site-header"></div>
+
+  <main class="wrap wrap-md section">
+    <h1 class="page-title">Station Directory</h1>
+    <p class="page-sub">Explore our rail network, station facilities, and accessibility information</p>
+
+    <div class="st-grid">
+      <div>
+        <div class="map-card">
+          <span class="lbl">Network map</span>
+          <div class="map" id="stMap"></div>
+        </div>
+
+        <input class="inp st-search" id="stSearch" type="search" placeholder="Search stations..." aria-label="Search stations" />
+        <div id="stList"></div>
+      </div>
+
+      <aside id="stDetail" class="detail" aria-live="polite"></aside>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modification Payment | JJCC Railways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .pay-wrap { max-width: 760px; margin: auto; }
+    .pay-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      padding: 26px; margin-bottom: 18px;
+    }
+    .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .pay-detail {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: 9px; padding: 15px; min-width: 0;
+    }
+    .pay-detail small { display: block; color: var(--muted); margin-bottom: 5px; }
+    .pay-detail strong { font-size: 16px; overflow-wrap: anywhere; }
+    .payment-qr {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 18px 0;
+    }
+    .payment-qr img {
+      display: block; width: 220px; height: 220px; object-fit: contain;
+      background: #fff; border: 8px solid #fff; outline: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .payment-qr p { margin-top: 14px; color: var(--muted); font-size: 13px; }
+    .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+    .bank-detail { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .copy-btn {
+      border: 1px solid var(--line); background: #fff; color: var(--ink);
+      padding: 7px 11px; border-radius: 7px; font-size: 12px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--paper); }
+    .upload-area {
+      display: block; position: relative; border: 2px dashed #c9c8c4;
+      border-radius: 12px; padding: 30px 18px; text-align: center;
+      background: #faf9f6; transition: .2s ease; cursor: pointer;
+    }
+    .upload-area:hover { border-color: #c9831b; background: #fff9ef; }
+    .upload-icon { font-size: 36px; margin-bottom: 10px; }
+    .upload-area h3 { font-size: 16px; margin-bottom: 7px; }
+    .upload-area p { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .browse-btn {
+      display: inline-block; background: #c9831b; color: #fff; border: none;
+      padding: 11px 20px; border-radius: 7px; font-weight: 600; cursor: pointer;
+    }
+    .browse-btn:hover { background: #a96c12; }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .receipt-preview {
+      display: none; margin-top: 16px; padding: 14px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff;
+    }
+    .receipt-preview.show { display: block; }
+    .receipt-preview img {
+      display: block; max-width: 100%; max-height: 240px; object-fit: contain;
+      margin: 12px auto; border-radius: 8px;
+    }
+    .receipt-file-info { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .remove-file { color: #b42318; background: none; border: none; cursor: pointer; font-weight: 600; }
+    .deadline { font-weight: 700; color: #9a4b00; }
+    @media(max-width:600px) {
+      .pay-grid, .bank-grid { grid-template-columns: 1fr; }
+      .pay-card { padding: 18px; }
+      .payment-qr img { width: 190px; height: 190px; }
+    }
+  </style>
+</head>
+<body data-page="booking-change-payment" data-active="book">
+<div id="site-header"></div>
+<main class="wrap wrap-sm section pay-wrap">
+  <nav class="crumbs">
+    <a href="booking-changes.html">Booking Changes</a>
+    <span>›</span>
+    <span>Payment</span>
+  </nav>
+  <h1 class="page-title">Modification Payment</h1>
+  <p class="page-sub">Pay once for all changes included in this request. Your original booking will remain unchanged until Admin approval.</p>
+
+  <section class="pay-card">
+    <div class="pay-grid">
+      <div class="pay-detail"><small>Booking reference</small><strong id="mcpRef">Loading…</strong></div>
+      <div class="pay-detail"><small>Estimated amount due</small><strong id="mcpAmount">—</strong></div>
+      <div class="pay-detail"><small>Payment deadline</small><strong id="mcpDeadline">—</strong></div>
+      <div class="pay-detail"><small>Payment status</small><strong id="mcpStatus">Loading…</strong></div>
+    </div>
+    <p id="mcpChanges" class="notice notice-info" style="margin-top:16px">Loading modification details…</p>
+    <p class="notice notice-warn">The amount shown is an estimate based on the current fare rules. Admin must verify the receipt and final amount before approval. Do not transfer real money using placeholder payment details.</p>
+    <p id="mcpMessage" class="notice notice-info" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="pay-card" id="mcpPayPanel" hidden>
+    <h2>Payment Instructions</h2>
+    <p class="muted">Scan the QR code using your banking application or use the bank details below.</p>
+    <div class="payment-qr">
+      <img src="JJCC%20Railways%20Payment.png" alt="JJCC Railways payment QR code">
+      <p>Scan the QR code to view the payment information.</p>
+    </div>
+    <div class="bank-grid">
+      <div class="pay-detail"><small>Bank</small><strong>BDO Unibank, Inc. (BDO)</strong></div>
+      <div class="pay-detail">
+        <small>Account name</small>
+        <div class="bank-detail"><strong>JJCC Railways</strong><button type="button" class="copy-btn" data-copy="JJCC Railways">Copy</button></div>
+      </div>
+      <div class="pay-detail">
+        <small>Account number</small>
+        <div class="bank-detail"><strong>2671 2182 4962</strong><button type="button" class="copy-btn" data-copy="267121824962">Copy</button></div>
+      </div>
+      <div class="pay-detail"><small>Exact amount</small><strong id="mcpExactAmount">—</strong></div>
+    </div>
+    <h2 style="margin-top:26px">Upload Payment Receipt</h2>
+    <p class="muted" style="margin-bottom:16px">Upload a clear image of your payment receipt. Accepted formats: JPG, PNG, WEBP, or PDF. Maximum file size: 5 MB.</p>
+    <label class="upload-area" for="mcpReceipt">
+      <div class="upload-icon">☁️</div>
+      <h3>Drag and drop your receipt here</h3>
+      <p>or click below to browse your files</p>
+      <span class="browse-btn">Browse Files</span>
+      <p style="margin-top:14px;margin-bottom:0">JPG, PNG, WEBP, PDF · Maximum 5 MB</p>
+      <input type="file" id="mcpReceipt" accept="image/jpeg,image/png,image/webp,application/pdf">
+    </label>
+    <div class="receipt-preview" id="mcpReceiptPreview">
+      <div class="receipt-file-info">
+        <strong id="mcpReceiptFileName">Selected receipt</strong>
+        <button type="button" class="remove-file" id="mcpRemoveReceipt">Remove</button>
+      </div>
+      <img id="mcpReceiptImagePreview" alt="Payment receipt preview" hidden>
+    </div>
+    <button class="btn-gold block" id="mcpSubmit" type="button" style="margin-top:18px">Submit Receipt for Admin Review</button>
+    <button class="btn-outline block" id="mcpCancel" type="button" style="margin-top:12px">Cancel Modification</button>
+  </section>
+  <a class="btn-outline" href="booking-changes.html">View Booking Changes</a>
+</main>
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script src="booking-changes.js"></script>
+</body>
+</html>

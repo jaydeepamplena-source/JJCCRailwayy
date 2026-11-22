@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Payment | JJCC Railways</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700&family=Yellowtail&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .pay-wrap {
+      max-width: 760px;
+      margin: auto;
+    }
+
+    .pay-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 26px;
+      margin-bottom: 18px;
+    }
+
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pay-detail {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 15px;
+      min-width: 0;
+    }
+
+    .pay-detail small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .pay-detail strong {
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .payment-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 18px 0;
+    }
+
+    .payment-qr img {
+      display: block;
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+      background: #fff;
+      border: 8px solid #fff;
+      outline: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .payment-qr p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bank-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .bank-detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .copy-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 7px 11px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: var(--paper);
+    }
+
+    .upload-area {
+      border: 2px dashed #c9c8c4;
+      border-radius: 12px;
+      padding: 30px 18px;
+      text-align: center;
+      background: #faf9f6;
+      transition: .2s ease;
+      cursor: pointer;
+    }
+
+    .upload-area:hover,
+    .upload-area.dragover {
+      border-color: #c9831b;
+      background: #fff9ef;
+    }
+
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .upload-area h3 {
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .upload-area p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .browse-btn {
+      display: inline-block;
+      background: #c9831b;
+      color: #fff;
+      border: none;
+      padding: 11px 20px;
+      border-radius: 7px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .browse-btn:hover {
+      background: #a96c12;
+    }
+
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .receipt-preview {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .receipt-preview.show {
+      display: block;
+    }
+
+    .receipt-preview img {
+      display: block;
+      max-width: 100%;
+      max-height: 240px;
+      object-fit: contain;
+      margin: 12px auto;
+      border-radius: 8px;
+    }
+
+    .receipt-file-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .remove-file {
+      color: #b42318;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .upload-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .deadline {
+      font-weight: 700;
+      color: #9a4b00;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media(max-width: 600px) {
+      .pay-grid,
+      .bank-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pay-card {
+        padding: 18px;
+      }
+
+      .payment-qr img {
+        width: 190px;
+        height: 190px;
+      }
+    }
+  </style>
+</head>
+
+<body data-page="payment" data-active="book">
+
+<div id="site-header"></div>
+
+<main class="wrap wrap-sm section pay-wrap">
+
+  <nav class="crumbs">
+    <a href="active-bookings.html">My Bookings</a>
+    <span>›</span>
+    <span>Payment</span>
+  </nav>
+
+  <h1 class="page-title">Complete Your Payment</h1>
+
+  <p class="page-sub">
+    Follow the payment instructions and upload your receipt for administrator review.
+  </p>
+
+  <!-- BOOKING DETAILS -->
+  <section class="pay-card">
+
+    <div class="pay-grid">
+
+      <div class="pay-detail">
+        <small>Booking reference</small>
+        <strong id="paymentReference">Loading…</strong>
+      </div>
+
+      <div class="pay-detail">
+        <small>Total amount</small>
+        <strong id="paymentAmount">—</strong>
+      </div>
+
+      <div class="pay-detail">
+        <small>Payment deadline</small>
+        <strong id="paymentDeadline">—</strong>
+      </div>
+
+      <div class="pay-detail">
+        <small>Payment status</small>
+        <strong id="paymentState">Loading…</strong>
+      </div>
+
+    </div>
+
+    <p id="paymentStatus"
+       class="notice notice-info"
+       role="status"
+       aria-live="polite">
+      Loading booking details…
+    </p>
+
+  </section>
+
+  <!-- PAYMENT INSTRUCTIONS -->
+  <section class="pay-card" id="paymentInstructions" hidden>
+
+    <h2>Payment Instructions</h2>
+
+    <p class="muted">
+      Scan the QR code using your banking application or use the bank details below.
+    </p>
+
+    <div class="payment-qr">
+
+      <!-- Replace bdo-qr.png with your actual QR PNG filename -->
+       <img src="JJCC%20Railways%20Payment.png"
+     alt="JJCC Railways payment QR code"
+     id="paymentQR">
+
+      <p>Scan the QR code to view the payment information.</p>
+
+    </div>
+
+    <div class="bank-grid">
+
+      <div class="pay-detail">
+        <small>Bank</small>
+        <strong>BDO Unibank, Inc. (BDO)</strong>
+      </div>
+
+      <div class="pay-detail">
+        <small>Account name</small>
+
+        <div class="bank-detail">
+          <strong>JJCC Railways</strong>
+
+          <button
+            type="button"
+            class="copy-btn"
+            data-copy="JJCC Railways">
+            Copy
+          </button>
+        </div>
+      </div>
+
+      <div class="pay-detail">
+        <small>Account number</small>
+
+        <div class="bank-detail">
+          <strong>2671 2182 4962</strong>
+
+          <button
+            type="button"
+            class="copy-btn"
+            data-copy="267121824962">
+            Copy
+          </button>
+        </div>
+      </div>
+
+      <div class="pay-detail">
+        <small>Exact amount</small>
+        <strong id="instructionAmount">—</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- RECEIPT UPLOAD -->
+  <section class="pay-card" id="receiptSection" hidden>
+
+    <h2>Upload Payment Receipt</h2>
+
+    <p class="muted" style="margin-bottom:16px">
+      Upload a clear image of your payment receipt.
+      Accepted formats: JPG, PNG, WEBP.
+      Maximum file size: 5 MB.
+    </p>
+
+    <div
+      class="upload-area"
+      id="receiptDropArea"
+      role="button"
+      tabindex="0"
+      aria-label="Choose or drag and drop a payment receipt">
+
+      <div class="upload-icon">☁️</div>
+
+      <h3>Drag and drop your receipt here</h3>
+
+      <p>or click below to browse your files</p>
+
+      <button
+        type="button"
+        class="browse-btn"
+        id="browseReceipt">
+        Browse Files
+      </button>
+
+      <input
+        type="file"
+        id="receiptFile"
+        accept="image/jpeg,image/png,image/webp"
+      >
+
+      <p style="margin-top:14px;margin-bottom:0">
+        JPG, PNG, WEBP · Maximum 5 MB
+      </p>
+
+    </div>
+
+    <!-- RECEIPT PREVIEW -->
+    <div class="receipt-preview" id="receiptPreview">
+
+      <div class="receipt-file-info">
+        <strong id="receiptFileName">Selected receipt</strong>
+
+        <button
+          type="button"
+          class="remove-file"
+          id="removeReceipt">
+          Remove
+        </button>
+      </div>
+
+      <img id="receiptImagePreview" alt="Payment receipt preview">
+
+    </div>
+
+    <button
+      class="btn-gold block"
+      id="uploadReceipt"
+      type="button"
+      style="margin-top:18px">
+      Submit Receipt
+    </button>
+
+  </section>
+
+  <!-- SUBMISSION RESULT -->
+  <section class="pay-card" id="receiptResult" hidden></section>
+
+  <a class="btn-outline" href="active-bookings.html">
+    Back to My Bookings
+  </a>
+
+</main>
+
+<div id="site-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
